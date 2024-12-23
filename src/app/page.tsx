@@ -1,21 +1,17 @@
 import { auth } from "@/auth"
-import { redirect } from "next/navigation";
-
+import Canvas from "@/components/canvas/canvas";
+import Sidebar from "@/components/sidebar/sidebard";
 
 export default async function Home() {
   const session = await auth()
-
-  if (session) {
-    redirect("/canvas")
-  }
-
   return (
-    <div className="">
-      <h1 className="text-3xl font-bold underline">
-        Bienvenido a Vidext - tldraw
-      </h1>
-      Iniciar sesión o crear cuenta
-      Continuar como invitado
-    </div>
+    <>
+      <div className="fixed inset-0 end-10">
+        <Canvas />
+      </div>
+      <div className="fixed right-0 h-screen flex justify-center">
+        <Sidebar isLoggedIn={!!session} />
+      </div>
+    </>
   );
 }
