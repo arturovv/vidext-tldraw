@@ -10,6 +10,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     adapter: DrizzleAdapter(db),
     providers: [
         Nodemailer({
+            name: "email",
             server: {
                 host: process.env.EMAIL_SERVER_HOST,
                 port: process.env.EMAIL_SERVER_PORT,

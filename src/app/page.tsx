@@ -1,11 +1,21 @@
-'use client'
-import { Tldraw } from "tldraw"
-import "tldraw/tldraw.css"
+import { auth } from "@/auth"
+import { redirect } from "next/navigation";
 
-export default function Home() {
+
+export default async function Home() {
+  const session = await auth()
+
+  if (session) {
+    redirect("/canvas")
+  }
+
   return (
-    <div className="fixed inset-0">
-      <Tldraw persistenceKey="tldraw" />
+    <div className="">
+      <h1 className="text-3xl font-bold underline">
+        Bienvenido a Vidext - tldraw
+      </h1>
+      Iniciar sesión o crear cuenta
+      Continuar como invitado
     </div>
   );
 }
