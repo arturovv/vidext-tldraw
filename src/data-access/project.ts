@@ -1,5 +1,5 @@
 import db from "@/db"
-import { projects, } from "@/db/schema/project";
+import { projects, } from "@/db/schema/projects";
 import { and, eq } from "drizzle-orm";
 
 export const getProjectById = async (projectId: string) => {
