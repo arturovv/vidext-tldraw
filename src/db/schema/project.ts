@@ -31,12 +31,27 @@ export const projects = pgTable(
 export const ProjectSchema = createSelectSchema(projects);
 export const NewProjectSchema = createInsertSchema(projects).pick({
     title: true,
+}).extend({
+    snapshot: zod.string()
 });
+
 export const UpdateProjectSchema = createUpdateSchema(projects).pick({
     title: true,
     isPublic: true,
     isActive: true
+}).extend({
+    id: zod.string(),
 });
+
+export const UpdateSnapshotSchema = zod.object({
+    id: zod.string(),
+    snapshot: zod.string()
+})
+
+export const GetSnapshotSchema = zod.object({
+    id: zod.string()
+})
+
 
 export type TProject = zod.infer<typeof ProjectSchema>;
 export type TNewProject = zod.infer<typeof NewProjectSchema>;

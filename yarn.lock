@@ -1120,6 +1120,18 @@
   dependencies:
     tslib "^2.8.0"
 
+"@tanstack/query-core@5.62.9":
+  version "5.62.9"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.62.9.tgz#94231ffea5de086b5e6c0f1e527cda5650cb1849"
+  integrity sha512-lwePd8hNYhyQ4nM/iRQ+Wz2cDtspGeZZHFZmCzHJ7mfKXt+9S301fULiY2IR2byJYY6Z03T427E5PoVfMexHjw==
+
+"@tanstack/react-query@^5.62.9":
+  version "5.62.9"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.62.9.tgz#94bc4e00092f5dff2b93297e31b7e5d9946464a5"
+  integrity sha512-jFUH9pOsOyN2ugGIR8tjz2+bRC0PEp25LvpNvYIgiEegP5Xbfi9phuNOMnjFugyg3GM0WI/HfUEE7eM2vmcbxg==
+  dependencies:
+    "@tanstack/query-core" "5.62.9"
+
 "@tldraw/editor@3.6.1":
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/@tldraw/editor/-/editor-3.6.1.tgz#709312c7f68e5edbae0239f7076393c879f429ee"
@@ -1189,6 +1201,21 @@
   integrity sha512-oFEfVcrFWnVO+DcW+ys8NfgiWVctL7uDCf6g13iax4aN0gTu1HiJYkNIsTUcIe7Uji3LZ9BZlm9fthGg6yvQ4Q==
   dependencies:
     "@tldraw/utils" "3.6.1"
+
+"@trpc/client@11.0.0-rc.666":
+  version "11.0.0-rc.666"
+  resolved "https://registry.yarnpkg.com/@trpc/client/-/client-11.0.0-rc.666.tgz#74a81f74a8812eb0593c5f7a4d369ed6af824636"
+  integrity sha512-BP3H0bktY03m7haVT5QoPR4sn30DNJcvFHsA3Msj3uPRY8JLVE03MR4rVG6T7VbcglORKpyMlRxjpUgdRmJErA==
+
+"@trpc/react-query@11.0.0-rc.666":
+  version "11.0.0-rc.666"
+  resolved "https://registry.yarnpkg.com/@trpc/react-query/-/react-query-11.0.0-rc.666.tgz#a9214a94b493bad25ac132f0605d1107e7946953"
+  integrity sha512-BH0vU7g5w4IrN7xmWSKvLucZ9ZnpRwsDWCSJ0R09xdYwR7geHkna3PBbd8vQVFBSw7MpWEy6LGXVSCHSbUicLg==
+
+"@trpc/server@11.0.0-rc.666":
+  version "11.0.0-rc.666"
+  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-11.0.0-rc.666.tgz#07f051db9b2994bf72281e4300795611a4ac7c91"
+  integrity sha512-k+jKrdH/owDRRXPR7oPKCQRTu0dOEnqdGh56863ym95sFY8qXE7BhOR8S4WqyZw1CiPZGjRkdFN0q/GsJhKsIA==
 
 "@types/cookie@0.6.0":
   version "0.6.0"
@@ -3644,6 +3671,11 @@ semver@^7.6.0, semver@^7.6.3:
   version "7.6.3"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.6.3.tgz#980f7b5550bc175fb4dc09403085627f9eb33143"
   integrity sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==
+
+server-only@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/server-only/-/server-only-0.0.1.tgz#0f366bb6afb618c37c9255a314535dc412cd1c9e"
+  integrity sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==
 
 set-function-length@^1.2.2:
   version "1.2.2"

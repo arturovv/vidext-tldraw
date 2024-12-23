@@ -49,18 +49,20 @@ export default function useCanvas({ initialProjectId, isLoggedIn, readOnly }: Pr
   }, [projectId])
 
   useEffect(() => {
+    const listeners: (() => void)[] = []
+
     if (!editor) {
       return
     }
 
     editor.updateInstanceState({ isReadonly: readOnly })
 
-    const listeners: (() => void)[] = []
 
     if (!projectId && isLoggedIn) {
       // create the project
       const { document, session } = getSnapshot(editor.store)
       createProject(document)
+      return
     }
 
     if (projectId && isLoggedIn && !readOnly) {

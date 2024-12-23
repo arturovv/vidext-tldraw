@@ -27,13 +27,13 @@ export default async function Home({
 
 
   return (
-    <>
+    <main>
       <div className="fixed inset-0 end-10">
         <Canvas initialProjectId={projectId} isLoggedIn={isLoggedIn} readOnly={!userIsTheOwner} />
       </div>
       <div className="fixed right-0 h-screen flex justify-center">
         <Sidebar isLoggedIn={isLoggedIn} />
       </div>
-    </>
+    </main>
   );
 }
