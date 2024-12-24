@@ -1,7 +1,7 @@
 import { auth } from "@/auth"
 import Canvas from "@/components/canvas/canvas";
 import Sidebar from "@/components/sidebar/sidebard";
-import { findUserActiveProject, getProjectById } from "@/data-access/project";
+import { getProjectById } from "@/data-access/project";
 
 export default async function Home({
   params,
@@ -10,14 +10,13 @@ export default async function Home({
 }) {
   const session = await auth()
   let projectId = (await params).projectId?.[0]
-  let userIsTheOwner = false
+  let userIsTheOwner = true
   let isLoggedIn = false
 
   if (session?.user?.id) {
     isLoggedIn = true
 
-    const project = projectId ? await getProjectById(projectId)
-      : await findUserActiveProject(session.user.id)
+    const project = projectId ? await getProjectById(projectId) : null
 
     projectId = project?.id
     userIsTheOwner = !projectId || project?.userId === session.user.id

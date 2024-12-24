@@ -15,20 +15,21 @@ export default function useCanvas({ initialProjectId, isLoggedIn, readOnly }: Pr
   const [projectId, setProjectId] = useState<string | undefined>(initialProjectId)
   const [editor, setEditor] = useState<Editor | null>(null)
   const [status, setStatus] = useState<'loading' | 'idle' | 'error'>('loading')
-  const snapshotResponse = trpc.projects.getSnapshotById.useQuery({ id: projectId ?? '' }, { enabled: !!projectId })
+  const snapshotQuery = trpc.projects.getSnapshotById.useQuery({ id: projectId ?? '' }, { enabled: !!projectId })
+  const getActiveProjectQuery = trpc.projects.getUserActiveProject.useQuery(undefined, { enabled: isLoggedIn && !projectId });
   const updateSnapshotMutation = trpc.projects.updateSnapshot.useMutation()
   const createProjectMutation = trpc.projects.create.useMutation()
   const guestPersistenceKey = useRef<string | undefined>(projectId ? undefined : `guest-editor-${uuidv4()}`);
 
 
   useEffect(() => {
-    if (snapshotResponse.status === 'success' && editor) {
-      editor.loadSnapshot(snapshotResponse.data)
+    if (snapshotQuery.status === 'success' && editor) {
+      editor.loadSnapshot(snapshotQuery.data)
       setStatus('idle')
-    } else if (snapshotResponse.status === 'error') {
+    } else if (snapshotQuery.status === 'error') {
       setStatus('error')
     }
-  }, [snapshotResponse.status, editor])
+  }, [snapshotQuery.status, editor])
 
 
   useEffect(() => {
@@ -45,7 +46,6 @@ export default function useCanvas({ initialProjectId, isLoggedIn, readOnly }: Pr
           id: projectId,
           snapshot: JSON.stringify(document),
         });
-        setStatus('idle');
       } catch (error) {
         console.error(error);
         setStatus('error');
@@ -83,9 +83,10 @@ export default function useCanvas({ initialProjectId, isLoggedIn, readOnly }: Pr
 
 
   useEffect(() => {
-    async function createNewProject() {
-      if (!editor) return;
-      const { document } = getSnapshot(editor.store);
+    if (!editor || getActiveProjectQuery.isLoading) return;
+
+    async function createNewProject(editorInstance: Editor) {
+      const { document } = getSnapshot(editorInstance.store);
       try {
         const project = await createProjectMutation.mutateAsync({
           title: "New project",
@@ -99,12 +100,30 @@ export default function useCanvas({ initialProjectId, isLoggedIn, readOnly }: Pr
       }
     }
 
-    if (!projectId && isLoggedIn && editor) {
-      createNewProject();
+    async function loadActiveProject(editorInstance: Editor) {
+      if (getActiveProjectQuery.data) {
+        setProjectId(getActiveProjectQuery.data.id);
+        guestPersistenceKey.current = undefined;
+      } else {
+        // No hay proyecto activo, crear uno vacío
+        await createNewProject(editorInstance);
+      }
+    }
+
+    if (isLoggedIn && !projectId) {
+      if (editor.store.allRecords.length > 0) {
+        // si el usuario ha hecho cambios, crear un nuevo proyecto
+        createNewProject(editor);
+      } else if (getActiveProjectQuery.isSuccess) {
+        // Cargar el proyecto activo existente
+        loadActiveProject(editor);
+      } else if (getActiveProjectQuery.isError) {
+        setStatus('error');
+      }
     } else if (!projectId) {
       setStatus('idle');
     }
-  }, [isLoggedIn, editor, projectId, createProjectMutation]);
+  }, [isLoggedIn, editor, getActiveProjectQuery.status]);
 
   return {
     setEditor,

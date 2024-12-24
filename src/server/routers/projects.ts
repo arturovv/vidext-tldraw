@@ -27,7 +27,8 @@ export const projectsRouter = router({
         }
     }),
     getUserActiveProject: protectedProcedure.query(async ({ ctx }) => {
-        return (await db.select().from(projects).where(and(eq(projects.userId, ctx.user.id), eq(projects.isActive, true))).limit(1));
+        const project = await db.select().from(projects).where(and(eq(projects.userId, ctx.user.id), eq(projects.isActive, true))).limit(1)
+        return project.length > 0 ? project[0] : null
     }),
     create: protectedProcedure
         .input(NewProjectSchema)
