@@ -15,10 +15,10 @@ import { Button } from "@/components/ui/button";
 import { signIn, signOut } from "next-auth/react"
 
 interface SidebardProps {
-    isLoggedIn?: boolean
+    isLoggedIn: boolean
 }
 
-export default function SidebarComponent({ isLoggedIn = false }: SidebardProps) {
+export default function SidebarComponent({ isLoggedIn }: SidebardProps) {
     const [open, setOpen] = React.useState(!isLoggedIn);
     return (
         <Sheet defaultOpen={!isLoggedIn} open={open} onOpenChange={setOpen}>

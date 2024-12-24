@@ -4,30 +4,44 @@ import "tldraw/tldraw.css"
 import useCanvas from "./useCanvas"
 
 interface CanvasProps {
-  initialProjectId?: string
+  projectId?: string
   isLoggedIn: boolean
   readOnly: boolean
 }
 
-export default function CanvasComponent({ initialProjectId, isLoggedIn, readOnly }: CanvasProps) {
-  // si no me viene projectId, pero el usuario está logeado, he de crear el proyecto
-  const { store, projectId, setEditor } = useCanvas({
-    initialProjectId,
+export default function CanvasComponent({ projectId, isLoggedIn, readOnly }: CanvasProps) {
+  const { setEditor, status, guestPersistenceKey } = useCanvas({
+    initialProjectId: projectId,
     isLoggedIn,
     readOnly,
   });
 
+  if (status === 'loading') {
+    return (
+      <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center">
+        <div className="text-2xl">Cargando...</div>
+      </div>
+    )
+  }
+
+  if (status === 'error') {
+    return (
+      <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center">
+        <div className="text-2xl">Error al cargar el proyecto</div>
+      </div>
+    )
+  }
+
   return (
     <>
-      {readOnly && projectId && (
+      {readOnly && (
         <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center">
           <div className="text-2xl">Proyecto en modo de sólo lectura</div>
         </div>
       )}
       <Tldraw
-        persistenceKey={projectId ? undefined : "tldraw"}
-        store={store}
-        onMount={setEditor} />
+        onMount={setEditor}
+        persistenceKey={guestPersistenceKey} />
     </>
   );
 }

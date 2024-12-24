@@ -11,7 +11,6 @@ export const protectedProcedure = trpc.procedure.use(
         const { ctx } = opts;
         // `ctx.user` is nullable
         if (!ctx.user) {
-            //     ^?
             throw new TRPCError({ code: 'UNAUTHORIZED' });
         }
         return opts.next({

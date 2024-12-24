@@ -1,4 +1,4 @@
-import NextAuth from "next-auth"
+import NextAuth, { DefaultSession } from "next-auth"
 import Nodemailer from "next-auth/providers/nodemailer"
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import db from "@/db"
@@ -22,4 +22,33 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             from: process.env.EMAIL_FROM,
         }),
     ],
+    callbacks: {
+        jwt({ token, user }) {
+            if (user) { // User is available during sign-in
+                token.id = user.id
+            }
+            return token
+        },
+        session({ session, token, user }) {
+            return {
+                ...session,
+                user: {
+                    ...session.user,
+                    id: token.id as string,
+                },
+            }
+        },
+    },
 })
+
+declare module "next-auth" {
+    /**
+     * Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
+     */
+    interface Session {
+        user?: {
+            id: string
+            email: string
+        }
+    }
+}
