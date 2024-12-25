@@ -1,8 +1,7 @@
 'use client'
-import { useCallback, useEffect, useRef, useState } from "react"
-import { Editor, getSnapshot, TLStoreSnapshot } from "tldraw"
+import { useCallback, useEffect, useState } from "react"
+import { Editor, getSnapshot } from "tldraw"
 import { trpc } from "@/server/client";
-import { v4 as uuidv4 } from 'uuid';
 import { useDebounce } from "./useDebounce";
 
 interface Props {
@@ -11,16 +10,29 @@ interface Props {
   readOnly: boolean
 }
 
+const LS_HAS_CHANGES_KEY = 'hasChanges'
+const LS_GUEST_PERSISTENCE_KEY = 'guestPersistenceKey'
+
 export default function useCanvas({ initialProjectId, isLoggedIn, readOnly }: Props) {
   const [projectId, setProjectId] = useState<string | undefined>(initialProjectId)
   const [editor, setEditor] = useState<Editor | null>(null)
   const [status, setStatus] = useState<'loading' | 'idle' | 'error'>('loading')
+  const [guestPersistenceKey, setGuestPersistenceKey] = useState<string | undefined>(undefined)
   const snapshotQuery = trpc.projects.getSnapshotById.useQuery({ id: projectId ?? '' }, { enabled: !!projectId })
   const getActiveProjectQuery = trpc.projects.getUserActiveProject.useQuery(undefined, { enabled: isLoggedIn && !projectId });
   const updateSnapshotMutation = trpc.projects.updateSnapshot.useMutation()
   const createProjectMutation = trpc.projects.create.useMutation()
-  const guestPersistenceKey = useRef<string | undefined>(projectId ? undefined : `guest-editor-${uuidv4()}`);
 
+  useEffect(() => {
+    const item = localStorage.getItem(LS_GUEST_PERSISTENCE_KEY)
+    if (item) {
+      setGuestPersistenceKey(item)
+    } else {
+      const guestPersistenceKey = crypto.randomUUID()
+      localStorage.setItem(LS_GUEST_PERSISTENCE_KEY, guestPersistenceKey)
+      setGuestPersistenceKey(guestPersistenceKey)
+    }
+  }, [])
 
   useEffect(() => {
     if (snapshotQuery.status === 'success' && editor) {
@@ -40,8 +52,9 @@ export default function useCanvas({ initialProjectId, isLoggedIn, readOnly }: Pr
 
 
   const updateSnapshot = useCallback(
-    async (projectId: string, document: TLStoreSnapshot) => {
+    async (editorInstance: Editor, projectId: string) => {
       try {
+        const { document } = getSnapshot(editorInstance.store);
         await updateSnapshotMutation.mutateAsync({
           id: projectId,
           snapshot: JSON.stringify(document),
@@ -54,36 +67,31 @@ export default function useCanvas({ initialProjectId, isLoggedIn, readOnly }: Pr
     [updateSnapshotMutation]
   );
 
-  const debouncedUpdateSnapshot = useDebounce(
-    (editorInstance: Editor | null, currentProjectId: string | undefined) => {
-      if (editorInstance && currentProjectId) {
-        const { document } = getSnapshot(editorInstance.store);
-        updateSnapshot(currentProjectId, document);
-      }
-    },
-    500
-  );
+  const debouncedUpdateSnapshot = useDebounce(updateSnapshot, 500);
 
   useEffect(() => {
-    const listeners: (() => void)[] = [];
-    if (!editor || !projectId || !isLoggedIn || readOnly) return;
+    if (!editor || readOnly) return;
 
-    const listener = editor.store.listen(
+    const unlisten = editor.store.listen(
       () => {
-        debouncedUpdateSnapshot(editor, projectId);
+        if (!projectId || !isLoggedIn) {
+          localStorage.setItem(LS_HAS_CHANGES_KEY, 'true');
+          unlisten();
+        } else {
+          debouncedUpdateSnapshot(editor, projectId);
+        }
       },
       { scope: 'document', source: 'user' }
     );
-    listeners.push(listener);
 
     return () => {
-      listeners.forEach((l) => l());
+      unlisten();
     };
-  }, [editor, projectId, isLoggedIn, readOnly, debouncedUpdateSnapshot]);
+  }, [editor, projectId, debouncedUpdateSnapshot]);
 
 
   useEffect(() => {
-    if (!editor || getActiveProjectQuery.isLoading) return;
+    if (!editor || projectId || getActiveProjectQuery.isLoading || !guestPersistenceKey) return;
 
     async function createNewProject(editorInstance: Editor) {
       const { document } = getSnapshot(editorInstance.store);
@@ -93,7 +101,10 @@ export default function useCanvas({ initialProjectId, isLoggedIn, readOnly }: Pr
           snapshot: JSON.stringify(document),
         });
         setProjectId(project.id);
-        guestPersistenceKey.current = undefined;
+        setGuestPersistenceKey(undefined);
+
+        localStorage.removeItem(LS_HAS_CHANGES_KEY);
+        localStorage.removeItem(LS_GUEST_PERSISTENCE_KEY);
       } catch (error) {
         console.error(error);
         setStatus('error');
@@ -103,16 +114,17 @@ export default function useCanvas({ initialProjectId, isLoggedIn, readOnly }: Pr
     async function loadActiveProject(editorInstance: Editor) {
       if (getActiveProjectQuery.data) {
         setProjectId(getActiveProjectQuery.data.id);
-        guestPersistenceKey.current = undefined;
+        setGuestPersistenceKey(undefined)
       } else {
         // No hay proyecto activo, crear uno vacío
         await createNewProject(editorInstance);
       }
     }
 
-    if (isLoggedIn && !projectId) {
-      if (editor.store.allRecords.length > 0) {
-        // si el usuario ha hecho cambios, crear un nuevo proyecto
+    if (isLoggedIn) {
+
+      if (localStorage.getItem(LS_HAS_CHANGES_KEY)) {
+        // si el usuario ha hecho cambios, crear un nuevo proyecto partiendo de lo que haya en el editor
         createNewProject(editor);
       } else if (getActiveProjectQuery.isSuccess) {
         // Cargar el proyecto activo existente
@@ -120,14 +132,16 @@ export default function useCanvas({ initialProjectId, isLoggedIn, readOnly }: Pr
       } else if (getActiveProjectQuery.isError) {
         setStatus('error');
       }
-    } else if (!projectId) {
+    } else {
+      // guest mode
       setStatus('idle');
     }
-  }, [isLoggedIn, editor, getActiveProjectQuery.status]);
+
+  }, [projectId, editor, getActiveProjectQuery.status, guestPersistenceKey]);
 
   return {
     setEditor,
     status,
-    guestPersistenceKey: guestPersistenceKey.current
+    guestPersistenceKey
   }
 }
