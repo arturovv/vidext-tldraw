@@ -22,7 +22,7 @@ export const projects = pgTable(
         isPublic: boolean().notNull().default(false),
         isActive: boolean().notNull().default(true),
         createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
-        updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+        updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow().$onUpdate(() => new Date()),
     },
     (projectTable) => [{
         unq: unique().on(projectTable.userId, projectTable.isActive),

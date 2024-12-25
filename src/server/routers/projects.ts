@@ -1,19 +1,22 @@
 import db from "@/db";
 import { GetSnapshotSchema, NewProjectSchema, projects, UpdateProjectSchema, UpdateSnapshotSchema } from "@/db/schema/projects";
 import { and, eq } from "drizzle-orm";
-import { protectedProcedure, router } from "../trpc";
+import { protectedProcedure, publicProcedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import fs from 'fs/promises';
 import path from 'path';
+import { auth } from "@/auth";
 
 export const projectsRouter = router({
-    getSnapshotById: protectedProcedure.input(GetSnapshotSchema).query(async ({ input, ctx }) => {
+    getSnapshotById: publicProcedure.input(GetSnapshotSchema).query(async ({ input, ctx }) => {
         // check if project exists and it's public
         const project = await db.select().from(projects).where(eq(projects.id, input.id)).limit(1);
         if (project.length === 0) {
             throw new TRPCError({ code: 'NOT_FOUND' });
         }
-        if (project[0].userId !== ctx.user.id && !project[0].isPublic) {
+
+        const session = await auth()
+        if (project[0].userId !== session?.user?.id && !project[0].isPublic) {
             throw new TRPCError({ code: 'UNAUTHORIZED' });
         }
         // return the snapshot json file

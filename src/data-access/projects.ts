@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import db from "@/db"
 import { projects } from "@/db/schema/projects";
-import { asc, eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 // DAL for projects
 
@@ -43,5 +43,5 @@ export const getUserProjects = async () => {
     if (!session?.user?.id) {
         return []
     }
-    return await db.select().from(projects).where(eq(projects.userId, session.user.id)).orderBy(asc(projects.updatedAt))
+    return await db.select().from(projects).where(eq(projects.userId, session.user.id)).orderBy(desc(projects.createdAt))
 }

@@ -20,7 +20,7 @@ export default function Canvas({ projectId, isLoggedIn, readOnly }: CanvasProps)
   return (
     <>
       {readOnly && (
-        <div className="fixed top-10 left-0 right-0 bottom-0 flex justify-center z-10">
+        <div className="absolute top-10 left-0 right-0 bottom-0 z-[1000] w-fit h-fit mx-auto">
           <div className="text-2xl">Read-only mode</div>
         </div>
       )}

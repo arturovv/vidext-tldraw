@@ -10,7 +10,7 @@ export default async function Home({
 }) {
   const session = await auth()
   let projectId = (await params).projectId?.[0]
-  let userIsTheOwner = true
+  let userIsTheOwner = !projectId
   let isLoggedIn = false
 
   if (session?.user?.id) {

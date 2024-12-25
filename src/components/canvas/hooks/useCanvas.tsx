@@ -24,6 +24,8 @@ export default function useCanvas({ initialProjectId, isLoggedIn, readOnly }: Pr
   const createProjectMutation = trpc.projects.create.useMutation()
 
   useEffect(() => {
+    if (initialProjectId) return
+
     const item = localStorage.getItem(LS_GUEST_PERSISTENCE_KEY)
     if (item) {
       setGuestPersistenceKey(item)
