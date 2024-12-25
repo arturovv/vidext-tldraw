@@ -1,4 +1,4 @@
-import NextAuth, { DefaultSession } from "next-auth"
+import NextAuth from "next-auth"
 import Nodemailer from "next-auth/providers/nodemailer"
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import db from "@/db"
@@ -29,7 +29,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
             return token
         },
-        session({ session, token, user }) {
+        session({ session, token }) {
             return {
                 ...session,
                 user: {

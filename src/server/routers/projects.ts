@@ -8,7 +8,6 @@ import path from 'path';
 
 export const projectsRouter = router({
     getSnapshotById: protectedProcedure.input(GetSnapshotSchema).query(async ({ input, ctx }) => {
-        console.log(input)
         // check if project exists and it's public
         const project = await db.select().from(projects).where(eq(projects.id, input.id)).limit(1);
         if (project.length === 0) {
@@ -22,7 +21,7 @@ export const projectsRouter = router({
         try {
             return JSON.parse(await fs.readFile(dataFilePath, 'utf-8'));
         } catch (error) {
-            console.log(error)
+            console.error(error)
             throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
         }
     }),
@@ -50,8 +49,10 @@ export const projectsRouter = router({
             // save the snapshot json file
             const dataFilePath = path.join(process.cwd(), `data/${project[0].id}.json`);
             try {
+                await fs.mkdir('data', { recursive: true });
                 await fs.writeFile(dataFilePath, input.snapshot);
             } catch (error) {
+                console.error(error)
                 await db.delete(projects).where(eq(projects.id, project[0].id));
                 throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
             }
@@ -84,6 +85,7 @@ export const projectsRouter = router({
             try {
                 await fs.writeFile(dataFilePath, input.snapshot);
             } catch (error) {
+                console.error(error)
                 throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
             }
 

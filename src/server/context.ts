@@ -1,8 +1,6 @@
 import { auth } from '@/auth';
-import { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 
-
-export const createContext = async (opts: FetchCreateContextFnOptions) => {
+export const createContext = async () => {
     const session = await auth()
     const user = session?.user
 
