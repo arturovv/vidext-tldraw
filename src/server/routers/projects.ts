@@ -65,7 +65,6 @@ export const projectsRouter = router({
             return await db.update(projects).set({
                 title: input.title,
                 isPublic: input.isPublic,
-                isActive: input.isActive
             }).where(and(eq(projects.userId, ctx.user.id), eq(projects.id, input.id)));
         }),
     updateSnapshot: protectedProcedure

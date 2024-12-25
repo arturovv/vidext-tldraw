@@ -35,7 +35,7 @@ export default function Canvas({ projectId, isLoggedIn, readOnly }: CanvasProps)
 }
 
 const StatusComponent = ({ status }: { status: "loading" | "idle" | "error" }) => status === "idle" ? null : (
-  <div className="absolute w-full h-full bg-white flex items-center justify-center z-10">
+  <div className="absolute w-full h-full bg-white flex items-center justify-center z-[1000]">
     {status === "loading" ? (
       <Loading />
     ) : (

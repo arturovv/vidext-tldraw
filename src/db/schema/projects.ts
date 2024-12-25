@@ -38,7 +38,6 @@ export const NewProjectSchema = createInsertSchema(projects).pick({
 export const UpdateProjectSchema = createUpdateSchema(projects).pick({
     title: true,
     isPublic: true,
-    isActive: true
 }).extend({
     id: zod.string(),
 });

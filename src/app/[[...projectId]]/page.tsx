@@ -1,7 +1,7 @@
 import { auth } from "@/auth"
 import Canvas from "@/components/canvas/canvas";
 import Sidebar from "@/components/sidebar/sidebard";
-import { getProjectById } from "@/data-access/project";
+import { getProjectById, setProjectActive } from "@/data-access/projects";
 
 export default async function Home({
   params,
@@ -20,6 +20,10 @@ export default async function Home({
 
     projectId = project?.id
     userIsTheOwner = !projectId || project?.userId === session.user.id
+
+    if (project && userIsTheOwner && !project.isActive) {
+      await setProjectActive(project.id)
+    }
   }
 
   return (

@@ -13,6 +13,7 @@ import { ChevronsLeft } from "lucide-react";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { signIn, signOut } from "next-auth/react"
+import Link from "next/link";
 
 interface SidebardProps {
   isLoggedIn: boolean
@@ -61,7 +62,9 @@ const UserContent = ({ closeSidebar }: { closeSidebar: () => void }) => {
       <SheetHeader>
         <SheetTitle>Hello</SheetTitle>
         <SheetDescription>
-          Your account
+          <Button variant="link" asChild>
+            <Link href="/projects">Manage projects</Link>
+          </Button>
         </SheetDescription>
       </SheetHeader>
       <SheetFooter>
