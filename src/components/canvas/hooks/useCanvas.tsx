@@ -116,7 +116,7 @@ export default function useCanvas({ initialProjectId, isLoggedIn, readOnly }: Pr
         setProjectId(getActiveProjectQuery.data.id);
         setGuestPersistenceKey(undefined)
       } else {
-        // No hay proyecto activo, crear uno vacío
+        // No hay proyecto activo, crear uno nuevo
         await createNewProject(editorInstance);
       }
     }
