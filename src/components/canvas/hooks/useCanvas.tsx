@@ -143,6 +143,7 @@ export default function useCanvas({ initialProjectId, isLoggedIn, readOnly }: Pr
 
   return {
     setEditor,
+    editor,
     status,
     guestPersistenceKey
   }
