@@ -65,8 +65,8 @@ Follow these steps to set up and run the project on your local machine.
     EMAIL_SERVER_PASSWORD="<YOUR_EMAIL_SERVER_PASSWORD>"
     EMAIL_FROM="<YOUR_EMAIL_ADDRESS>"
     NEXTAUTH_SECRET="<YOUR_NEXTAUTH_SECRET>"
-    APP_URL="http://localhost:3000"
-    NEXT_PUBLIC_APP_URL=${APP_URL}
+    AUTH_URL=http://localhost:3000
+    NEXT_PUBLIC_APP_URL=${AUTH_URL}
     ```
 
     -   Replace `<YOUR_POSTGRESQL_CONNECTION_STRING>` with your PostgreSQL connection string.
