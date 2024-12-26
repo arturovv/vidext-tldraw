@@ -2,13 +2,15 @@
 
 import { Button } from "@/components/ui/button"
 import { Sparkles } from "lucide-react"
-import { Editor } from "tldraw"
+import { Editor, exportToBlob } from "tldraw"
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import Link from "next/link"
+import { describeImageWithAI } from "@/lib/ai/actions"
 
 interface AiDescribeProps {
   editor: Editor | null
@@ -18,9 +20,13 @@ interface AiDescribeProps {
 
 export default function AiDescribe({ editor, isLoggedIn, isShapeSelected }: AiDescribeProps) {
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (!editor) return
-    console.log(editor.getSelectedShapeIds())
+
+    const shapeIds = editor.getSelectedShapeIds()
+    const blob = await exportToBlob({ editor, ids: shapeIds, format: "png" })
+    const description = await describeImageWithAI(blob)
+    alert(description)
   }
 
   return (
@@ -30,11 +36,11 @@ export default function AiDescribe({ editor, isLoggedIn, isShapeSelected }: AiDe
           <TooltipTrigger asChild>
             <Button
               onClick={handleClick}
-              disabled={!isLoggedIn || !isShapeSelected}
+              disabled={!isLoggedIn || !isShapeSelected || !editor}
             ><Sparkles />Describe with AI</Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Please access to use AI features</p>
+            <p>Please <Link href="/api/auth/signin" className="underline">login</Link> to use AI features</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
