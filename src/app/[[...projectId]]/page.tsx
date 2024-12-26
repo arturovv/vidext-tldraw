@@ -1,6 +1,6 @@
 import { auth } from "@/auth"
 import Canvas from "@/components/canvas/canvas";
-import Sidebar from "@/components/sidebar/sidebard";
+import Sidebar from "@/components/sidebar/sidebar";
 import { getProjectById, setProjectActive } from "@/data-access/projects";
 
 export default async function Home({
