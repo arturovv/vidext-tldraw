@@ -53,7 +53,7 @@ const GuestContent = () => {
         </div>
       </SheetHeader>
       <div className="flex justify-center items-end flex-1 text-sm">
-        Videx Technical Test by Arturo Varón
+        Vidext Technical Test by Arturo Varón
       </div>
     </SheetContent>
   );
@@ -77,7 +77,7 @@ const UserContent = ({ closeSidebar }: { closeSidebar: () => void }) => {
       <div className="flex flex-col justify-end items-center flex-1 text-sm gap-5">
         <Button onClick={signOutHandler}>Sign out</Button>
 
-        Videx Technical Test by Arturo Varón
+        Vidext Technical Test by Arturo Varón
       </div>
     </SheetContent>
   );
