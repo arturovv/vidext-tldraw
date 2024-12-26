@@ -3,9 +3,10 @@ import { Tldraw } from "tldraw"
 import "tldraw/tldraw.css"
 import useCanvas from "./hooks/useCanvas"
 import Loading from "@/components/ui/loading"
-import { Button } from "../ui/button"
+import { Button } from "@/components/ui/button"
 import { RotateCw } from "lucide-react"
 import useHasSelection from "./hooks/useHasSelection"
+import AiDescribe from "@/components/ai-describe/ai-describe"
 
 interface CanvasProps {
   projectId?: string
@@ -38,10 +39,13 @@ export default function Canvas({ projectId, isLoggedIn, readOnly }: CanvasProps)
       <StatusComponent status={status} />
 
       {!readOnly && status === "idle" && (
-        <RotateButton
-          onClick={handleRotateShape}
-          disabled={!isSomeShapeSelected}
-        />
+        <div className="absolute bottom-[62px] left-0 right-0 ms-auto me-auto w-fit z-[1000] gap-2 flex">
+          <RotateButton
+            onClick={handleRotateShape}
+            disabled={!isSomeShapeSelected}
+          />
+          <AiDescribe editor={editor} isLoggedIn={isLoggedIn} isShapeSelected={isSomeShapeSelected} />
+        </div>
       )}
 
       <Tldraw
@@ -63,7 +67,6 @@ const StatusComponent = ({ status }: { status: "loading" | "idle" | "error" }) =
 
 const RotateButton = ({ onClick, disabled }: { onClick: () => void; disabled: boolean }) => (
   <Button
-    className="absolute bottom-[62px] left-0 right-0 ms-auto me-auto w-fit z-[1000]"
     onClick={onClick}
     disabled={disabled}><RotateCw />Rotate</Button>
 )
