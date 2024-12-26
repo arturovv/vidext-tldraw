@@ -8,7 +8,7 @@ import path from 'path';
 import { auth } from "@/auth";
 
 export const projectsRouter = router({
-    getSnapshotById: publicProcedure.input(GetSnapshotSchema).query(async ({ input, ctx }) => {
+    getSnapshotById: publicProcedure.input(GetSnapshotSchema).query(async ({ input }) => {
         // check if project exists and it's public
         const project = await db.select().from(projects).where(eq(projects.id, input.id)).limit(1);
         if (project.length === 0) {
