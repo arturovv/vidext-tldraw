@@ -6,6 +6,7 @@ import { desc, eq } from "drizzle-orm";
 // DAL for projects
 
 export const getProjectById = async (projectId: string) => {
+    // drizzle prevents from sql injection
     const project = await db.select().from(projects).where(eq(projects.id, projectId)).limit(1)
     return project.length > 0 ? project[0] : null
 }

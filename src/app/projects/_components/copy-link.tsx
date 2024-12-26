@@ -27,7 +27,7 @@ export default function CopyLink({ projectId }: CopyLinkProps) {
   }
 
   return (
-    <Button className={`flex gap-2 ${copied ? "cursor-default" : ""}`} variant={"link"} onClick={handleCopy}>
+    <Button className={`flex gap-2 min-w-[120px] ${copied ? "cursor-default" : ""}`} variant={"link"} onClick={handleCopy}>
       <Link />
       {copied ? "Copied!" : "Copy Link"}
     </Button>
