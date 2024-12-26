@@ -12,7 +12,7 @@ This project is a drawing canvas built with Next.js, tldraw, and trpc. It allows
 -   **Public/Private Projects:** Control the visibility of projects, making them public or keeping them private.
 -   **AI-Powered Description:** Use AI to generate text descriptions of your drawings.
 -   **Canvas Rotation:** Rotate selected shapes on the canvas.
--   **Data Persistence:** Drawings are saved using drizzle ORM with Postgres.
+-   **Data Persistence:** Drawings are saved in the file system ('/data'), to prevent database saturation.
 -   **Guest Access:** Start drawing immediately as a guest without logging in.
 -   **Responsive Design:** Works well on various screen sizes.
 
@@ -159,3 +159,4 @@ Follow these steps to set up and run the project on your local machine.
 -   Real-time collaboration
 -   i18n
 -   oAuth login with Google and GitHub
+-   Setup a bucket for storing the snapshots (json files)
