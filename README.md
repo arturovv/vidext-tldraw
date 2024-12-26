@@ -18,7 +18,7 @@ This project is a drawing canvas built with Next.js, tldraw, and trpc. It allows
 
 ## Currently Online
 
-This project is currently online at [vidext-tldraw.vercel.app](https://vidext-tldraw.vercel.app/).
+This project is currently online at [vidext-tldraw-app-production.up.railway.app](https://vidext-tldraw-app-production.up.railway.app/).
 
 ## Setup and Run Locally
 
