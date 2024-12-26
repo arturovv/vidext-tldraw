@@ -4,6 +4,8 @@ import { Editor, getSnapshot } from "tldraw"
 import { trpc } from "@/server/client";
 import { useDebounce } from "./useDebounce";
 
+// TO-DO: Refactor to simplify this hook using custom hook composition
+
 interface Props {
   initialProjectId?: string
   isLoggedIn: boolean
